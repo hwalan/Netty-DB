@@ -55,13 +55,22 @@ public class NettyServer {
 						@Override
 						public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 							logger.info("NettyServer channelRegistered");
-							ctx.writeAndFlush("Hello World");
+							ctx.writeAndFlush("Hello World Server");
 						}
 
 						// 이벤트가 수신되었을때 호출
 						@Override
 						protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
 							logger.info("NettyServer channelRead() : " + msg);
+							
+							// 랜덤 시간만큼 sleep 후 다음 작업 수행 (Out Of Memory 방지)
+							Thread.sleep(vo.getTime("NettyServer"));
+							
+							if (vo.isClose("NettyServer")) {
+								ctx.writeAndFlush("Return Message :: " + System.currentTimeMillis());
+							} else {
+								ctx.close();
+							}
 						}
 					});
 				}

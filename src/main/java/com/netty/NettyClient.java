@@ -53,15 +53,22 @@ public class NettyClient {
 						@Override
 						public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 							logger.info("NettyClient channelRegistered");
-							ctx.writeAndFlush("Hello World");
+							ctx.writeAndFlush("Hello World Client");
 						}
 
 						// 이벤트가 수신되었을때 호출
 						@Override
 						protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
 							logger.info("NettyClient channelRead() : " + msg);
-							Thread.sleep(1000);
-							ctx.close();
+							
+							// 랜덤 시간만큼 sleep 후 다음 작업 수행 (Out Of Memory 방지)
+							Thread.sleep(vo.getTime("NettyClient"));
+							
+							if (vo.isClose("NettClient")) {
+								ctx.writeAndFlush("Return Message :: " + System.currentTimeMillis());
+							} else {
+								ctx.close();
+							}
 						}
 					});
 				}

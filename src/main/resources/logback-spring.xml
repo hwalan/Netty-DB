@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<springProperty name="filePath" source="logging.file.path"/>
+	
+	<!-- [년-월-일 시:분:초][thread명] LogLevel Class명 -log 줄바꿈 -->
+	<property name="LOG_PATTERN" value ="[%d{yyyy-MM-dd HH:mm:ss}][%thread] %-5level %C -%msg%n" />
+	<!-- 파일로 저장할 로그 파일명 지정 -->
+	<property name="FILENAMEPATTERN" value ="logback.%d{yyyy-MM-dd}.%i.log" />
+	
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>${LOG_PATTERN}</Pattern>
+        </layout>
+    </appender>
+    
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${filePath}/logback.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${filePath}/${FILENAMEPATTERN}</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1GB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30000</maxHistory>
+        </rollingPolicy>
+    </appender>
+  
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+         <appender-ref ref="FILE" />
+    </root>
+    
+</configuration>
