@@ -1,12 +1,14 @@
 package com.netty.client;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.netty.LogRepository;
 import com.netty.NettyVO;
+import com.netty.Repository;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -23,7 +25,7 @@ public class NettyClient {
 	NettyVO vo;
 	
 	@Autowired
-	LogRepository repository;
+	Repository repository;
 	
 	@Autowired
 	NettyClientInitializer initializer;
@@ -44,7 +46,7 @@ public class NettyClient {
 
 			ChannelFuture f = b.connect("127.0.0.1", 80).sync();
 			
-			repository.logInsert("Client", "Client Start");
+			repository.logInsert("Client", "Client Start", LocalDateTime.now());
 
 			f.channel().closeFuture().sync();
 
@@ -52,7 +54,7 @@ public class NettyClient {
 			logger.error("NettyClient ERROR : ", e);
 		} finally {
 			logger.info("NettyClient close");
-			repository.logInsert("Client", "Client Close");
+			repository.logInsert("Client", "Client Close", LocalDateTime.now());
 			
 			group.shutdownGracefully();
 			vo.setClientAlive(false);

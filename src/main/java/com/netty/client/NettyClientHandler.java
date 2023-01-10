@@ -1,12 +1,14 @@
 package com.netty.client;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.netty.LogRepository;
 import com.netty.NettyVO;
+import com.netty.Repository;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,7 +24,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 	NettyVO vo;
 	
 	@Autowired
-	LogRepository repository;
+	Repository repository;
 	
 	// channel이 EventLoop에 등록되었을때 호출
 	@Override
@@ -42,10 +44,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<String> {
 		if (vo.isClose("NettClient")) {
 			String message = "Return Message :: " + System.currentTimeMillis();
 			
-			repository.logInsert("Client", message);
+			repository.logInsert("Client", message, LocalDateTime.now());
 			ctx.writeAndFlush(message);
 		} else {
-			repository.logInsert("Client", "Server UnRegistered");
+			repository.logInsert("Client", "Server UnRegistered", LocalDateTime.now());
 			ctx.close();
 		}
 	}

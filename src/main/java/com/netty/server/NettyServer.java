@@ -1,12 +1,14 @@
 package com.netty.server;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.netty.LogRepository;
 import com.netty.NettyVO;
+import com.netty.Repository;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -26,7 +28,7 @@ public class NettyServer {
 	NettyVO vo;
 	
 	@Autowired
-	LogRepository repository;
+	Repository repository;
 	
 	@Autowired
 	NettyServerInitializer initializer;
@@ -47,7 +49,7 @@ public class NettyServer {
 			
 			ChannelFuture f = b.bind(80).sync();
 			
-			repository.logInsert("Server", "Server Start");
+			repository.logInsert("Server", "Server Start", LocalDateTime.now());
 
 			f.channel().closeFuture().sync();
 			
@@ -55,7 +57,7 @@ public class NettyServer {
 			logger.error("NettyServer ERROR : ", e);
 		} finally {
 			logger.info("NettyServer close");
-			repository.logInsert("Server", "Server Close");
+			repository.logInsert("Server", "Server Close", LocalDateTime.now());
 			
 			bossGroup.shutdownGracefully();
 			workerGroup.shutdownGracefully();

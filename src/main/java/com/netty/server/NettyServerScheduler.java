@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.netty.NettyVO;
 
-/*@Component*/
+@Component
 public class NettyServerScheduler {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
